@@ -1,14 +1,17 @@
+import { currentThreads } from "./CreateThread";
 import BasicThreadList from "../components/BasicThreadList";
 import React from "react";
+import { Grow } from "@mui/material";
 
 const Home: React.FC = () => {
+    //const name: string = "Guest";
     return (
         <>
-            <h3>
-                {"Welcome to CVWO's sample react app! Here's a basic list of forum threads for you to experiment with."}
-            </h3>
+            <Grow timeout={5000} in>
+                <h1>{`Welcome! Login to continue.`}</h1>
+            </Grow>
             <br />
-            <BasicThreadList />
+            <BasicThreadList thread={currentThreads} />
         </>
     );
 };
