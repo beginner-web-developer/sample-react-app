@@ -1,6 +1,15 @@
+import { User } from "../types/User";
 import React, { useState } from "react";
 import { Grow, Button, Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
+export let currentuser: User = {
+    id: 0,
+    username: "",
+    name: "",
+    created_at: new Date(2023, 12, 31, 23, 59, 59),
+    updated_at: new Date(2023, 12, 31, 23, 59, 59),
+};
 
 const Login: React.FC = () => {
     // event handler for updating input field value
@@ -18,22 +27,15 @@ const Login: React.FC = () => {
         fetch("http://127.0.0.1:3001/api/v1/users")
             .then((response) => response.json())
             .then((data) => {
-                const account: { [key: string]: string | number }[] = data.filter(
-                    (user: { [key: string]: string | number }) => user["username"] === username,
-                );
-                if (account[0] === undefined) {
+                const account: User[] = data.filter((user: User) => user["username"] === username);
+                if (account.length === 0) {
                     const error: HTMLElement | null = document.getElementById("errorMessage");
                     if (error !== null) {
                         error.innerHTML = "No account found for user: " + username;
                         setName("");
                     }
                 } else {
-                    const success: HTMLElement | null = document.getElementById("success");
-                    const profile: HTMLElement | null = document.getElementById("profile");
-                    if (success !== null && profile !== null) {
-                        success.innerHTML = "Sucessfully Logged In!";
-                        return account[0];
-                    }
+                    currentuser = account[0];
                     navigate("/home");
                 }
             });
@@ -41,6 +43,7 @@ const Login: React.FC = () => {
 
     return (
         <>
+            <h1 id="message"></h1>
             <Grow timeout={5000} in>
                 <h1 id="errorMessage">{"Welcome! Login to continue."}</h1>
             </Grow>

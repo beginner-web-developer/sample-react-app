@@ -1,7 +1,7 @@
+import { newUser } from "../types/User";
 import React, { useState } from "react";
 import { Button } from "@mui/material";
-import { JsonFunction, useNavigate } from "react-router-dom";
-import { JsonObjectExpression, JsonObjectExpressionStatement, JsonSourceFile } from "typescript";
+import { useNavigate } from "react-router-dom";
 
 const Signup: React.FC = () => {
     const [name, setName] = useState("");
@@ -15,6 +15,8 @@ const Signup: React.FC = () => {
     };
 
     const navigate = useNavigate();
+
+    // Post request to DB for saving information
     const createUser = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const username: string = (document.getElementById("newUserName") as HTMLInputElement).value;
@@ -33,22 +35,39 @@ const Signup: React.FC = () => {
             },
             body: JSON.stringify(data),
         })
-            .then((response) => response.json)
-            .then((data) => console.log(data))
+            .then((response) => response.json())
+            .then((data: newUser) => {
+                console.log(data);
+                if (data["status"] === "success") {
+                    const successMessage: HTMLElement | null = document.getElementById("message");
+                    if (successMessage !== null) {
+                        successMessage.innerHTML = "Account successfully created";
+                    }
+                    navigate("/login");
+                } else {
+                    const errorMessage: HTMLElement | null = document.getElementById("createError");
+                    const err: string | undefined = data["error"];
+                    if (errorMessage !== null && err !== undefined) {
+                        errorMessage.innerHTML = err;
+                    }
+                }
+            })
             .catch((error) => console.log(error));
-        navigate("/home");
     };
 
     return (
-        <form onSubmit={createUser}>
-            <label htmlFor="newUserName">{"Enter username: "}</label>
-            <input id="newUserName" value={name} onChange={UpdateText}></input>
-            <br></br>
-            <label htmlFor="newName">{"Enter name: "}</label>
-            <input id="newName" value={username} onChange={UpdateText}></input>
-            <br></br>
-            <Button type="submit">{"Sign up"}</Button>
-        </form>
+        <>
+            <h1 id="createError"></h1>
+            <form onSubmit={createUser}>
+                <label htmlFor="newUserName">{"Enter username: "}</label>
+                <input id="newUserName" value={name} onChange={UpdateText}></input>
+                <br></br>
+                <label htmlFor="newName">{"Enter name: "}</label>
+                <input id="newName" value={username} onChange={UpdateText}></input>
+                <br></br>
+                <Button type="submit">{"Sign up"}</Button>
+            </form>
+        </>
     );
 };
 

@@ -1,21 +1,35 @@
 import "../App.css";
-import Post from "../types/Post";
+import { Post } from "../types/Post";
 import { Button } from "@mui/material";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { User } from "../types/User";
 
-type ThreadListProps = {
-    thread: Post[];
-};
+const BasicThreadList = () => {
+    const [threads, setThreads] = useState([]);
+    // fetch threads from server once
+    useEffect(() => {
+        fetch("http://127.0.0.1:3001/api/v1/posts")
+            .then((response) => response.json())
+            .then((data) => setThreads(data));
+    }, []);
 
-const BasicThreadList = (props: ThreadListProps) => {
+    // associate user_id with user's name
+    useEffect(() => {
+        fetch("http://127.0.0.1:3001/api/v1/users")
+            .then((response) => response.json())
+            .then((data: User[]) => {
+
+            })
+    })
+
     return (
         <div style={{ width: "25vw", margin: "auto", textAlign: "center" }}>
             <h4>{"Welcome to my forum!"}</h4>
             <ul id="threads">
-                {props.thread.map((post) => (
-                    <li key={post.id}>
-                        <Link to="/thread/1">{post.thread}</Link> by {post.author}
+                {threads.map((thread: Post) => (
+                    <li key={thread["id"]}>
+                        <Link to={"/thread/" + thread["id"]}>{thread["title"]}</Link> by {thread["user_id"]}
                     </li>
                 ))}
             </ul>

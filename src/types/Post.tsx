@@ -1,7 +1,13 @@
-type Post = {
+export type Post = {
     id: number;
-    thread: string;
-    author: string;
-}
+    user_id: number;
+    title: string;
+    created_at: Date;
+    updated_at: Date;
+};
 
-export default Post;
+export type newPost = {
+    data?: Post;
+    error?: string;
+    status: string;
+}
