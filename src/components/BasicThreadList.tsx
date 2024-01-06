@@ -14,15 +14,6 @@ const BasicThreadList = () => {
             .then((data) => setThreads(data));
     }, []);
 
-    // associate user_id with user's name
-    useEffect(() => {
-        fetch("http://127.0.0.1:3001/api/v1/users")
-            .then((response) => response.json())
-            .then((data: User[]) => {
-
-            })
-    })
-
     return (
         <div style={{ width: "25vw", margin: "auto", textAlign: "center" }}>
             <h4>{"Welcome to my forum!"}</h4>
