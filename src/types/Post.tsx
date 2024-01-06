@@ -1,3 +1,8 @@
+export type PostFromDB = {
+    data: Post[];
+    username: string;
+};
+
 export type Post = {
     id: number;
     user_id: number;

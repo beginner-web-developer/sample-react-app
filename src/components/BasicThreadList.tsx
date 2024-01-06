@@ -3,10 +3,12 @@ import { Post } from "../types/Post";
 import { Button } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { User } from "../types/User";
 
 const BasicThreadList = () => {
-    const [threads, setThreads] = useState([]);
+    const [threads, setThreads] = useState({
+        data: [],
+        username: "",
+    });
     // fetch threads from server once
     useEffect(() => {
         fetch("http://127.0.0.1:3001/api/v1/posts")
@@ -18,9 +20,9 @@ const BasicThreadList = () => {
         <div style={{ width: "25vw", margin: "auto", textAlign: "center" }}>
             <h4>{"Welcome to my forum!"}</h4>
             <ul id="threads">
-                {threads.map((thread: Post) => (
+                {threads["data"].map((thread: Post, index: number) => (
                     <li key={thread["id"]}>
-                        <Link to={"/thread/" + thread["id"]}>{thread["title"]}</Link> by {thread["user_id"]}
+                        <Link to={"/thread/" + thread["id"]}>{thread["title"]}</Link> by {threads["username"][index]}
                     </li>
                 ))}
             </ul>
