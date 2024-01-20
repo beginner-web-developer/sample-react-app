@@ -16,8 +16,6 @@ const CreateThread: React.FC = () => {
         event.preventDefault();
         const title: string = (document.getElementById("post") as HTMLInputElement).value;
         const user_id: number = currentuser["id"];
-        console.log(title);
-        console.log(user_id);
         const data = {
             post: {
                 user_id,

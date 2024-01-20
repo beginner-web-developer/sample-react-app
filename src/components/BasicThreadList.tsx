@@ -1,21 +1,14 @@
 import "../App.css";
-import { Post } from "../types/Post";
+import { Post, PostFromDB } from "../types/Post";
 import { Button } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
-const BasicThreadList = () => {
-    const [threads, setThreads] = useState({
-        data: [],
-        username: "",
-    });
-    // fetch threads from server once
-    useEffect(() => {
-        fetch("http://127.0.0.1:3001/api/v1/posts")
-            .then((response) => response.json())
-            .then((data) => setThreads(data));
-    }, []);
+type Props = {
+    threads: PostFromDB;
+};
 
+const BasicThreadList = ({ threads }: Props) => {
     return (
         <div style={{ width: "25vw", margin: "auto", textAlign: "center" }}>
             <h4>{"Welcome to my forum!"}</h4>

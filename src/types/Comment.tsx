@@ -1,7 +1,8 @@
+import { Subpost } from "./Subpost";
+
 type Comment = {
-    body: string;
+    subpost: Subpost;
     author: string;
-    timestamp: Date;
 };
 
 export default Comment;
