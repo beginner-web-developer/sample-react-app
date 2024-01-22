@@ -1,10 +1,11 @@
+import { currentuser } from "./Login";
 import BasicCommentList from "../components/CommentList";
-import { Subpost } from "../types/Subpost";
+import { Subpost, newSubpost } from "../types/Subpost";
 import { Post } from "../types/Post";
 import NewComment from "../components/NewComment";
 import { Button, Card, CardContent, Typography } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export let subposts: Subpost[] = [];
 export let subposts_authors: string[] = [];
@@ -37,10 +38,44 @@ const StyledThreadView: React.FC = () => {
     const [show, setShow] = useState<boolean>(false);
     const showForm = () => setShow(true);
 
-    // get data from DB when form is submitted / when first rendered.
-    if (!show) {
-        getSubposts();
-    }
+    // event handler for form submission
+    const CreateComment = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const body: string = (document.getElementById("body") as HTMLInputElement).value;
+        const user_id: number = currentuser["id"];
+        const data = {
+            user_id,
+            post_id: post["id"],
+            body,
+        };
+
+        fetch("http://127.0.0.1:3001/api/v1/subposts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.json())
+            .then((data: newSubpost) => {
+                if (data["status"] === "success") {
+                    const successMessage: HTMLElement | null = document.getElementById("createCommentMessage");
+                    if (successMessage !== null) {
+                        successMessage.innerHTML = "Thread successfully created";
+                    }
+                    setShow(false);
+                } else {
+                    const errorMessage: HTMLElement | null = document.getElementById("createCommentMessage");
+                    const err: string | undefined = data["error"];
+                    if (errorMessage !== null && err !== undefined) {
+                        errorMessage.innerHTML = err;
+                    }
+                }
+            })
+            .catch((error) => console.log(error));
+    };
+
+    useEffect(getSubposts, []);
 
     return (
         <div style={{ width: "30vw", margin: "auto" }}>
@@ -61,7 +96,7 @@ const StyledThreadView: React.FC = () => {
             <Button variant="contained" color="secondary" onClick={showForm}>
                 {"Add comment"}
             </Button>
-            <NewComment show={show} setShow={setShow} thread_id={post["id"]} thread_name={post["title"]} />
+            <NewComment show={show} setShow={setShow} formHandler={CreateComment} name="comment" />
 
             <Link to="/home">
                 <Button variant="contained" color="secondary">

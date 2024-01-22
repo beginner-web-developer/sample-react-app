@@ -1,8 +1,9 @@
 import { currentuser } from "./Login";
 import BasicThreadList from "../components/BasicThreadList";
 import { Post } from "../types/Post";
+import NewComment from "../components/NewComment";
 import React, { useState } from "react";
-import { Grow, Chip, Avatar } from "@mui/material";
+import { Grow, Chip, Avatar, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
@@ -30,7 +31,6 @@ const Home: React.FC = () => {
                 .then((response) => response.json())
                 .then((data) => setThreads(data));
         };
-        getThread();
 
         // delete thread
         const deleteThread = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -50,7 +50,46 @@ const Home: React.FC = () => {
                 .catch((error) => console.log(error));
         };
 
+        // edit thread
+        const [show, setShow] = useState<boolean>(false);
+        const [thread_id, setThread_id] = useState<string>("0");
+        const editThread = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            setThread_id((event["target"] as HTMLButtonElement).value);
+            setShow(true);
+        };
+        const edit = (event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+            const title: string = (document.getElementById("body") as HTMLInputElement).value;
+            const data = {
+                title,
+            };
+            fetch(`http://127.0.0.1:3001/api/v1/posts/${thread_id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    const status: HTMLElement | null = document.getElementById("threadedit");
+                    if (data["status"] === "success") {
+                        if (status !== null) {
+                            status.innerHTML = "Thread successfully updated";
+                            setShow(false);
+                        }
+                    } else {
+                        if (status !== null) {
+                            status.innerHTML = data["error"];
+                        }
+                    }
+                })
+                .catch((error) => console.log(error));
+        };
+
+        getThread();
         getMyThreads();
+
         return (
             <>
                 <Chip
@@ -65,18 +104,28 @@ const Home: React.FC = () => {
                 <br />
                 <h3 id="msg"></h3>
                 <h3>{"My threads:"}</h3>
+                <h5 id="threadedit"></h5>
                 <ol key="myThreads">
                     {myThreads?.map((thread) => (
                         <>
                             <li key={"thread" + thread["id"]}>{thread["title"]}</li>
-                            <button
-                                id={"button" + thread["id"]}
-                                key={"button" + thread["id"]}
+                            <Button
+                                id={"delete" + thread["id"]}
+                                key={"delete" + thread["id"]}
                                 value={thread["id"]}
                                 onClick={deleteThread}
                             >
                                 {"Delete"}
-                            </button>
+                            </Button>
+                            <Button
+                                id={"edit" + thread["id"]}
+                                key={"edit" + thread["id"]}
+                                value={thread["id"]}
+                                onClick={editThread}
+                            >
+                                {"Edit"}
+                            </Button>
+                            <NewComment show={show} setShow={setShow} formHandler={edit} name="thread" />
                         </>
                     ))}
                 </ol>
