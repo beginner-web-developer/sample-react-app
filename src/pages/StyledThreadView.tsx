@@ -16,6 +16,7 @@ const StyledThreadView: React.FC = () => {
         id: 0,
         user_id: 0,
         title: "",
+        tag: "",
         created_at: new Date(),
         updated_at: new Date(),
     });

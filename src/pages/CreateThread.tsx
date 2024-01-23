@@ -1,3 +1,4 @@
+import { tags } from "./Home";
 import { currentuser } from "./Login";
 import { newPost } from "../types/Post";
 import React, { useState } from "react";
@@ -6,20 +7,23 @@ import { Button, InputLabel, Input } from "@mui/material";
 
 const CreateThread: React.FC = () => {
     // event handler for updating input field value
-    const [value, setValue] = useState("");
+    const [value, setValue] = useState<string>("");
     const UpdateText = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setValue(event.target.value);
     };
+    const [tag, setTag] = useState<string>("Educational");
 
     // event handler for form submission
     const PostThread = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const title: string = (document.getElementById("post") as HTMLInputElement).value;
         const user_id: number = currentuser["id"];
+        const tag: string = (document.getElementById("tag") as HTMLSelectElement).value;
         const data = {
             post: {
                 user_id,
                 title,
+                tag,
             },
         };
 
@@ -55,6 +59,14 @@ const CreateThread: React.FC = () => {
             <form onSubmit={PostThread}>
                 <InputLabel htmlFor="post">{"Thread Name"}</InputLabel>
                 <Input id="post" value={value} onChange={UpdateText} />
+                <InputLabel htmlFor="tag">{"Tag:"}</InputLabel>
+                <select name="tag" id="tag" value={tag} onChange={(e) => setTag(e.target.value)}>
+                    {tags.map((tag, index) => (
+                        <option key={"option" + index} value={tag}>
+                            {tag}
+                        </option>
+                    ))}
+                </select>
                 <Button type="submit">{"Post"}</Button>
             </form>
             <Button component={Link} to="/home">

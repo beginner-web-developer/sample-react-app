@@ -1,12 +1,13 @@
 export type PostFromDB = {
     data: Post[];
-    username: string;
+    username: string[];
 };
 
 export type Post = {
     id: number;
     user_id: number;
     title: string;
+    tag: string;
     created_at: Date;
     updated_at: Date;
 };

@@ -1,10 +1,12 @@
 import { currentuser } from "./Login";
 import BasicThreadList from "../components/BasicThreadList";
-import { Post } from "../types/Post";
+import { Post, PostFromDB } from "../types/Post";
 import NewComment from "../components/NewComment";
-import React, { useState } from "react";
-import { Grow, Chip, Avatar, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Grow, Chip, Avatar, Button, MenuList, Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
+export const tags: string[] = ["Educational", "Entertainment", "Essentials", "News", "Others"];
 
 const Home: React.FC = () => {
     // ensures user is always logged in before seeing home page
@@ -22,9 +24,9 @@ const Home: React.FC = () => {
         };
 
         // shows users all threads
-        const [threads, setThreads] = useState({
+        const [threads, setThreads] = useState<PostFromDB>({
             data: [],
-            username: "",
+            username: [],
         });
         const getThread = () => {
             fetch("http://127.0.0.1:3001/api/v1/posts")
@@ -77,6 +79,8 @@ const Home: React.FC = () => {
                         if (status !== null) {
                             status.innerHTML = "Thread successfully updated";
                             setShow(false);
+                            getMyThreads();
+                            getThread();
                         }
                     } else {
                         if (status !== null) {
@@ -87,8 +91,20 @@ const Home: React.FC = () => {
                 .catch((error) => console.log(error));
         };
 
-        getThread();
-        getMyThreads();
+        // search threads
+        const [filtered, setFilter] = useState<boolean>(false);
+        const [tag, setTag] = useState<string>("");
+        const search = (tag: string) => {
+            setFilter(true);
+            setTag(tag);
+        };
+        const showAll = (tag: string) => {
+            setFilter(false);
+            setTag(tag);
+        };
+
+        useEffect(getThread, []);
+        useEffect(getMyThreads, []);
 
         return (
             <>
@@ -102,6 +118,14 @@ const Home: React.FC = () => {
                     <h1>Welcome {currentuser["name"]}!</h1>
                 </Grow>
                 <br />
+                <h3>{"Filter threads by tags:"}</h3>
+                <MenuList>
+                    <Chip key="All" clickable={true} onClick={() => showAll("All")} label="All" />
+                    {tags.map((tag) => (
+                        <Chip key={tag} clickable={true} onClick={() => search(tag)} label={tag} />
+                    ))}
+                </MenuList>
+                <Divider variant="middle" />
                 <h3 id="msg"></h3>
                 <h3>{"My threads:"}</h3>
                 <h5 id="threadedit"></h5>
@@ -129,7 +153,8 @@ const Home: React.FC = () => {
                         </>
                     ))}
                 </ol>
-                <BasicThreadList threads={threads} />
+                <Divider variant="middle" />
+                <BasicThreadList posts={threads} filter={filtered} tag={tag} />
             </>
         );
     }
