@@ -1,5 +1,6 @@
 import { tags } from "./Home";
 import { currentuser } from "./Login";
+import { url } from "../url";
 import { newPost } from "../types/Post";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
@@ -27,7 +28,7 @@ const CreateThread: React.FC = () => {
             },
         };
 
-        fetch("http://127.0.0.1:3001/api/v1/posts", {
+        fetch(`${url}/api/v1/posts`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

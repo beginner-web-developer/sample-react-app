@@ -1,4 +1,5 @@
 import { currentuser } from "./Login";
+import { url } from "../url";
 import BasicCommentList from "../components/CommentList";
 import { Subpost, newSubpost } from "../types/Subpost";
 import { Post } from "../types/Post";
@@ -25,7 +26,7 @@ const StyledThreadView: React.FC = () => {
     const urlParams = useParams();
     const post_id: string | undefined = urlParams["threadid"];
     const getSubposts = () => {
-        fetch(`http://127.0.0.1:3001/api/v1/posts/${post_id}`)
+        fetch(`${url}/api/v1/posts/${post_id}`)
             .then((response) => response.json())
             .then((data) => {
                 setAuthor(data["username_post"]);
@@ -50,7 +51,7 @@ const StyledThreadView: React.FC = () => {
             body,
         };
 
-        fetch("http://127.0.0.1:3001/api/v1/subposts", {
+        fetch(`${url}/api/v1/subposts`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

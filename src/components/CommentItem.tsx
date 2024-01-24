@@ -1,4 +1,5 @@
 import NewComment from "./NewComment";
+import { url } from "../url";
 import Comment from "../types/Comment";
 import { currentuser } from "../pages/Login";
 import React, { useState } from "react";
@@ -29,7 +30,7 @@ const CommentItem: React.FC<Props> = ({ comment, styled }) => {
     // to delete comment
     const deleteComment = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         const comment_id: string = (event["target"] as HTMLButtonElement).value;
-        fetch(`http://127.0.0.1:3001/api/v1/subposts/${comment_id}`, {
+        fetch(`${url}/api/v1/subposts/${comment_id}`, {
             method: "DELETE",
         })
             .then((response) => response.json())
@@ -60,7 +61,7 @@ const CommentItem: React.FC<Props> = ({ comment, styled }) => {
         const data = {
             body,
         };
-        fetch(`http://127.0.0.1:3001/api/v1/subposts/${comment_id}`, {
+        fetch(`${url}/api/v1/subposts/${comment_id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -69,7 +70,6 @@ const CommentItem: React.FC<Props> = ({ comment, styled }) => {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 const status: HTMLElement | null = document.getElementById("status");
                 if (data["status"] === "success") {
                     if (status !== null) {

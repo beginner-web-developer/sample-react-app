@@ -1,3 +1,4 @@
+import { url } from "../url";
 import { newUser } from "../types/User";
 import React, { useState } from "react";
 import { Button } from "@mui/material";
@@ -28,7 +29,7 @@ const Signup: React.FC = () => {
             },
         };
 
-        fetch("http://127.0.0.1:3001/api/v1/users", {
+        fetch(`${url}/api/v1/users`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

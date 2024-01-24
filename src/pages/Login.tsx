@@ -1,3 +1,4 @@
+import { url } from "../url";
 import { User } from "../types/User";
 import React, { useState } from "react";
 import { Grow, Button, Chip } from "@mui/material";
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
     const Validate = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const username: string = (document.getElementById("username") as HTMLInputElement).value;
-        fetch("http://127.0.0.1:3001/api/v1/users")
+        fetch(`${url}/api/v1/users`)
             .then((response) => response.json())
             .then((data) => {
                 const account: User[] = data.filter((user: User) => user["username"] === username);

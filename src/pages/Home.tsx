@@ -1,4 +1,5 @@
 import { currentuser } from "./Login";
+import { url } from "../url";
 import BasicThreadList from "../components/BasicThreadList";
 import { Post, PostFromDB } from "../types/Post";
 import NewComment from "../components/NewComment";
@@ -18,7 +19,7 @@ const Home: React.FC = () => {
         const [myThreads, setMyThreads] = useState<Post[]>();
         const user_id: number = currentuser["id"];
         const getMyThreads = () => {
-            fetch(`http://127.0.0.1:3001/api/v1/users/${user_id}`)
+            fetch(`${url}/api/v1/users/${user_id}`)
                 .then((response) => response.json())
                 .then((data) => setMyThreads(data));
         };
@@ -29,7 +30,7 @@ const Home: React.FC = () => {
             username: [],
         });
         const getThread = () => {
-            fetch("http://127.0.0.1:3001/api/v1/posts")
+            fetch(`${url}/api/v1/posts`)
                 .then((response) => response.json())
                 .then((data) => setThreads(data));
         };
@@ -37,7 +38,7 @@ const Home: React.FC = () => {
         // delete thread
         const deleteThread = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             const thread_id: string = (event["target"] as HTMLButtonElement).value;
-            fetch(`http://127.0.0.1:3001/api/v1/posts/${thread_id}`, {
+            fetch(`${url}/api/v1/posts/${thread_id}`, {
                 method: "DELETE",
             })
                 .then((response) => response.json())
@@ -65,7 +66,7 @@ const Home: React.FC = () => {
             const data = {
                 title,
             };
-            fetch(`http://127.0.0.1:3001/api/v1/posts/${thread_id}`, {
+            fetch(`${url}/api/v1/posts/${thread_id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
